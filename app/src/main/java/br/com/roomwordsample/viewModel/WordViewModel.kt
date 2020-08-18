@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.roomwordsample.data.dao.WordDao
 import br.com.roomwordsample.data.database.WordRoomDatabase
 import br.com.roomwordsample.data.repository.WordRepository
 import br.com.roomwordsample.entity.Word
@@ -16,7 +17,9 @@ import kotlinx.coroutines.launch
  * @author obruno1997@gmail.com
  * @since 18/08/20
  */
-class WordViewModel(application: Application): AndroidViewModel(application) {
+class WordViewModel(
+    private val database: WordRoomDatabase
+) : ViewModel() {
 
     private val repository: WordRepository
     // Using LiveData and caching what getAlphabetizedWords returns has several benefits:
@@ -26,7 +29,7 @@ class WordViewModel(application: Application): AndroidViewModel(application) {
     val allWords: LiveData<List<Word>>
 
     init {
-        val wordsDao = WordRoomDatabase.getDatabase(application, viewModelScope).wordDao()
+        val wordsDao = database.wordDao()
         repository = WordRepository(wordsDao)
         allWords = repository.allWords
     }

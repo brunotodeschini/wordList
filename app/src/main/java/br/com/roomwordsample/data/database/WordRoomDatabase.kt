@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import br.com.roomwordsample.data.dao.WordDao
 import br.com.roomwordsample.entity.Word
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 
 /**
  * @author Todeschini
@@ -22,13 +22,12 @@ public abstract class WordRoomDatabase: RoomDatabase() {
     abstract fun wordDao(): WordDao
 
     private class WordDatabaseCallback(
-        private val scope: CoroutineScope
     ): RoomDatabase.Callback() {
 
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
             INSTANCE?.let { database ->
-                scope.launch {
+                GlobalScope.launch(IO) {
                     var wordDao = database.wordDao()
 
                     // Delete all content here.
@@ -46,7 +45,6 @@ public abstract class WordRoomDatabase: RoomDatabase() {
                 }
             }
         }
-
     }
 
     companion object {
@@ -56,8 +54,8 @@ public abstract class WordRoomDatabase: RoomDatabase() {
         private var INSTANCE: WordRoomDatabase? = null
 
         fun getDatabase(
-            context: Context,
-            scope: CoroutineScope
+            context: Context
+//            scope: CoroutineScope
         ): WordRoomDatabase {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
@@ -67,7 +65,7 @@ public abstract class WordRoomDatabase: RoomDatabase() {
                     WordRoomDatabase::class.java,
                     "word_database"
                 )
-                    .addCallback(WordDatabaseCallback(scope))
+                    .addCallback(WordDatabaseCallback())
                     .build()
                 INSTANCE = instance
                 // return instance

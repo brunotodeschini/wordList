@@ -4,22 +4,25 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import br.com.roomwordsample.R
+import br.com.roomwordsample.data.database.WordRoomDatabase
 import br.com.roomwordsample.entity.Word
 import br.com.roomwordsample.view.adapters.WordListAdapter
 import br.com.roomwordsample.viewModel.WordViewModel
+import br.com.roomwordsample.viewModel.WordViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: WordViewModel
+    private val viewModel: WordViewModel by viewModels {
+        WordViewModelFactory(WordRoomDatabase.getDatabase(this))
+    }
 
     private val newWordActivityRequestCode = 1
     lateinit var wordAdapter: WordListAdapter
@@ -27,8 +30,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        viewModel = ViewModelProvider(this).get(WordViewModel::class.java)
 
         wordAdapter = WordListAdapter(this)
         recyclerview?.apply {
@@ -88,9 +89,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.delete(word)
         }
 
-        dialog.setNegativeButton("Não") { dialog, _ ->
-            dialog.dismiss()
-        }
+        dialog.setNegativeButton("Não", null)
 
         dialog.create()
         dialog.show()
