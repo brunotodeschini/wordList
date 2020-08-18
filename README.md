@@ -6,3 +6,5 @@ This App was created with the intention to get deep into Room technology. In the
  - Coroutines
  - LiveData
  - RecyclerView
+
+* This example was taken from Android Developers tutorial.
