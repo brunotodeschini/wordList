@@ -1,2 +1,10 @@
-# wordList
-Simple app to added and remove words using room.
+#  WordList APP
+
+This App was created with the intention to get deep into Room technology. In the development process was used the following technologies:
+
+- Room
+ - Coroutines
+ - LiveData
+ - RecyclerView
+
+* This example was taken from Android Developers tutorial.
